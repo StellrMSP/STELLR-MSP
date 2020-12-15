@@ -25,4 +25,5 @@ Log Analytics Workspace
 <a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fmlamberty%2FLighthouse-MSP%2Fmain%2FWorkspace%2Fworkspaceconfig.json" target= "_blank">
 <img src="https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/1-CONTRIBUTION-GUIDE/images/deploytoazure.png"/>
 </a>
+
 Create Log Analytics Workspace with All WVD datasources
