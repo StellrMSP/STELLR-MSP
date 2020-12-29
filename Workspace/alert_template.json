@@ -3,26 +3,26 @@
     "contentVersion": "1.0.0.0",
     "parameters": {
         "scheduledqueryrules_Metrics_name": {
-            "defaultValue": "",
+            "defaultValue": "Metrics",
             "type": "String"
         },
         "scheduledqueryrules_Error_Events_name": {
-            "defaultValue": "",
+            "defaultValue": "Error",
             "type": "String"
         },
          "scheduledqueryrules_Evnet_log_warning_name": {
-            "defaultValue": "",
+            "defaultValue": "Warning",
             "type": "String"
         },
         "metricAlerts_Metrics_description": {
             "type": "SecureString"
         },
         "metricAlerts_name": {
-            "defaultValue": "",
+            "defaultValue": "Counters",
             "type": "String"
         },
         "workspaces_externalid": {
-            "defaultValue": "/subscriptions/subscription()/resourceGroups/resourceGroup().name/providers/Microsoft.OperationalInsights/workspaces/mlwvdmsp",
+            "defaultValue": "/subscriptions/subscription()/resourceGroups/resourceGroup().name/providers/Microsoft.OperationalInsights/workspaces/",
             "type": "String"
         },
         "actiongroups_externalid": {
@@ -30,11 +30,11 @@
             "type": "String"
         },        
         "actionGroups_name": {
-            "defaultValue": "",
+            "defaultValue": "Email",
             "type": "String"
         },
         "workspaceName": {
-            "defaultValue": "",
+            "defaultValue": "wvd-LA",
             "type": "string"
         }
 
