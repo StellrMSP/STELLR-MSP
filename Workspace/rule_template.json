@@ -25,6 +25,10 @@
         "actiongroups_externalid": {
             "defaultValue": "/subscriptions/Subscription()/resourceGroups/resourceGroup().name/providers/microsoft.insights/actiongroups/",
             "type": "String"
+        },
+        "actionGroups_name": {
+            "defaultValue": "",
+            "type": "String"
         }
     },
     "variables": {},
@@ -83,7 +87,7 @@
                     "severity": "3",
                     "aznsAction": {
                         "actionGroup": [
-                            "[parameters('actiongroups_externalid')]"
+                            "[concat(parameters('actiongroups_externalid'),parameters('actionGroups_name'))]"
                         ]
                     },
                     "throttlingInMin": 20,
@@ -116,7 +120,7 @@
                     "severity": "3",
                     "aznsAction": {
                         "actionGroup": [
-                            "[parameters('actiongroups_externalid')]"
+                           "[concat(parameters('actiongroups_externalid'),parameters('actionGroups_name'))]"
                         ]
                     },
                     "throttlingInMin": 20,
@@ -127,23 +131,7 @@
                     "odata.type": "Microsoft.WindowsAzure.Management.Monitoring.Alerts.Models.Microsoft.AppInsights.Nexus.DataContracts.Resources.ScheduledQueryRules.AlertingAction"
                 }
             }
-        },
-        {
-            "name": "workspace",
-            "type": "Microsoft.Resources/deployments",
-            "apiVersion": "2019-10-01",
-            "properties": {
-                "mode": "Incremental",
-                "templateLink": {
-                    "uri": "https://raw.githubusercontent.com/mlamberty/Lighthouse-MSP/main/Workspace/workspaceconfig.json",
-                    "contentVersion": "1.0.0.0"
-                },
-                "parameters": {
-                    "workspaceName":{
-                        "value":"[parameters('workspaceName')]"
-                    }
-                }
-            }
+               
         }
     ]
 }
