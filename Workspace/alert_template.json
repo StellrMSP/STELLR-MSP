@@ -22,11 +22,11 @@
             "type": "String"
         },
         "workspaces_externalid": {
-            "defaultValue": "/subscriptions/subscription().subscriptionId/resourceGroups/resourceGroup().name/providers/Microsoft.OperationalInsights/workspaces/mlwvdmsp",
+            "defaultValue": "/subscriptions/subscription()/resourceGroups/resourceGroup().name/providers/Microsoft.OperationalInsights/workspaces/mlwvdmsp",
             "type": "String"
         },
         "actiongroups_externalid": {
-            "defaultValue": "/subscriptions/subscription().subscriptionId/resourceGroups/resourceGroup().name/providers/microsoft.insights/actiongroups/",
+            "defaultValue": "/subscriptions/subscription()/resourceGroups/resourceGroup().name/providers/microsoft.insights/actiongroups/",
             "type": "String"
         },        
         "actionGroups_name": {
