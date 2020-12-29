@@ -10,7 +10,7 @@
             "defaultValue": "Error",
             "type": "String"
         },
-         "scheduledqueryrules_Evnet_log_warning_name": {
+         "scheduledqueryrules_Event_log_warning_name": {
             "defaultValue": "Warning",
             "type": "String"
         },
