@@ -15,7 +15,7 @@
             "type": "String"
         },
         "metricAlerts_Metrics_description": {
-            "type": "SecureString"
+            "type": "String"
         },
         "metricAlerts_name": {
             "defaultValue": "Counters",

@@ -41,6 +41,9 @@
             "tags": {
                 "hidden-link:/subscriptions/subscription()/resourceGroups/resourceGroup().name//providers/Microsoft.OperationalInsights/workspaces/[parameters('workspaceName')]": "Resource"
             },
+            "dependsOn": [
+                "[resourceId('Microsoft.Resources/deployments', 'Alert')]"
+            ],
             "properties": {
                 "enabled": "true",
                 "source": {
@@ -132,6 +135,20 @@
                 }
             }
                
+        },
+        {
+            "name": "Alert",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2019-10-01",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "https://raw.githubusercontent.com/StellrMSP/STELLR-MSP/main/Workspace/alert_template.json",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {}
+            }
         }
+        
     ]
 }
