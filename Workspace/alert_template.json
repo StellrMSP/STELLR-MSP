@@ -18,7 +18,7 @@
             "type": "String"
         },
         "metricAlerts_name": {
-            "defaultValue": "Counters",
+            "defaultValue": "Performance",
             "type": "String"
         },
         "workspaces_externalid": {
