@@ -15,6 +15,7 @@
             "type": "String"
         },
         "metricAlerts_Metrics_description": {
+            "defaultValue": "testing",
             "type": "String"
         },
         "metricAlerts_name": {
