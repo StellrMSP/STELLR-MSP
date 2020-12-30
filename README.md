@@ -3,14 +3,14 @@
 
 ### "Lighthouse Onboarding"
 
-<! Resource Group management
+[comment]: <! Resource Group management
+[comment]:
+[comment]: <a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FStellrMSP%2FSTELLR-MSP%2Fmain%2FLighthouse%2FDeployment%2Fazuredeploy.json" target= "_blank">
+[comment]: <img src="https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/1-CONTRIBUTION-GUIDE/images/deploytoazure.png"/>
+[comment]: </a>
 
-<a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FStellrMSP%2FSTELLR-MSP%2Fmain%2FLighthouse%2FDeployment%2Fazuredeploy.json" target= "_blank">
-<img src="https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/1-CONTRIBUTION-GUIDE/images/deploytoazure.png"/>
-</a>
-
-Enter any resource groups related to your Virtual Desktop environment in format:
-[{"rgName":"<Your RG Name>"},{"rgName":<Your RG Name>"}] >
+[comment]: Enter any resource groups related to your Virtual Desktop environment in format:
+[comment]: [{"rgName":"<Your RG Name>"},{"rgName":<Your RG Name>"}] >
 
 Subscription wide Management
 
