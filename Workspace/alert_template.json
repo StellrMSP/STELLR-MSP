@@ -40,11 +40,11 @@
         }
     },
      "workspaces_externalid": {
-            "defaultValue": "/subscriptions/subscription().subscriptionId/resourceGroups/Stellr_WVD_Infrastructure/providers/Microsoft.OperationalInsights/workspaces/mlwvdmsp",
+            "defaultValue": "/subscriptions/subscription().subscriptionId/resourceGroups/resourceGroup().name/providers/Microsoft.OperationalInsights/workspaces/",
             "type": "String"
         },
         "actiongroups_externalid": {
-            "defaultValue": "/subscriptions/subscription().subscriptionId/resourceGroups/stellr_wvd_infrastructure/providers/microsoft.insights/actiongroups/wvd-alerts",
+            "defaultValue": "/subscriptions/subscription().subscriptionId/resourceGroups/resourceGroup().name/providers/microsoft.insights/actiongroups/",
             "type": "String"
         },
         "actionGroups_name": {
@@ -99,7 +99,10 @@
             "location": "global",
             "properties": {
                 "severity": 3,
-                "enabled": true,               
+                "enabled": true,
+                "scopes": [
+                    "[concat('/subscriptions/subscription().subscriptionId/resourceGroups/resourceGroup().name/providers/Microsoft.OperationalInsights/workspaces',parameters('workspaceName'))]"
+                ],               
                 "evaluationFrequency": "PT1M",
                 "windowSize": "PT5M",
                 "criteria": {                    
@@ -138,7 +141,7 @@
                 "targetResourceType": "Microsoft.OperationalInsights/workspaces",
                 "actions": [
                     {
-                        "actionGroupId": "[concat(parameters('actionGroups_externalid'), parameters('actionGroups_name'))]",
+                        "actionGroupId": "[concat('/subscriptions/subscription().subscriptionId/resourceGroups/resourceGroup().name/providers/microsoft.insights/actiongroups/', parameters('actionGroups_name'))]",
                         "webHookProperties": {}
                     }
                 ],
