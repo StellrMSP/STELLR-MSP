@@ -201,6 +201,9 @@
             "apiVersion": "2018-04-16",
             "name": "[parameters('scheduledqueryrules_Error_Events_name')]",
             "location": "eastus",
+            "dependsOn": [
+                "[resourceId('Microsoft.Resources/deployments', 'workspace')]"
+            ],
             "properties": {
                 "enabled": "true",
                 "source": {
@@ -234,6 +237,9 @@
             "apiVersion": "2018-04-16",
             "name": "[parameters('scheduledqueryrules_Warning_Events_name')]",
             "location": "eastus",
+            "dependsOn": [
+                "[resourceId('Microsoft.Resources/deployments', 'workspace')]"
+            ],
             "properties": {
                 "enabled": "true",
                 "source": {
