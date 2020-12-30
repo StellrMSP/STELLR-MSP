@@ -2,8 +2,8 @@
     "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "scheduledqueryrules_Metrics_name": {
-            "defaultValue": "Metrics",
+        "scheduledqueryrules_name": {
+            "defaultValue": "s",
             "type": "String"
         },
         "scheduledqueryrules_Error_Events_name": {
@@ -14,11 +14,11 @@
             "defaultValue": "Warning",
             "type": "String"
         },
-        "metricAlerts_Metrics_description": {
+        "Alerts_description": {
             "type": "String"
         },
-        "metricAlerts_name": {
-            "defaultValue": "Counters",
+        "Alerts_name": {
+            "defaultValue": "Performance",
             "type": "String"
         },
         "workspaces_externalid": {
@@ -69,9 +69,9 @@
             }
         },
         {
-            "type": "microsoft.insights/metricAlerts",
+            "type": "microsoft.insights/Alerts",
             "apiVersion": "2018-03-01",
-            "name": "[parameters('metricAlerts_name')]",
+            "name": "[parameters('Alerts_name')]",
             "location": "global",
             "properties": {
                 "severity": 3,
@@ -85,7 +85,7 @@
                     "allOf": [
                         {
                             "threshold": 100000000,
-                            "name": "Metric1",
+                            "name": "1",
                             "metricNamespace": "Microsoft.OperationalInsights/workspaces",
                             "metricName": "Average_% Free Space",
                             "operator": "LessThanOrEqual",
@@ -94,7 +94,7 @@
                         },
                         {
                             "threshold": 2,
-                            "name": "Metric2",
+                            "name": "2",
                             "metricNamespace": "Microsoft.OperationalInsights/workspaces",
                             "metricName": "Average_Current Disk Queue Length",
                             "operator": "GreaterThan",
@@ -103,7 +103,7 @@
                         },
                         {
                             "threshold": 512000000,
-                            "name": "Metric3",
+                            "name": "3",
                             "metricNamespace": "Microsoft.OperationalInsights/workspaces",
                             "metricName": "Average_Available MBytes Memory",
                             "operator": "LessThanOrEqual",
@@ -111,7 +111,7 @@
                             "criterionType": "StaticThresholdCriterion"
                         }
                     ],
-                    "odata.type": "Microsoft.Azure.Monitor.SingleResourceMultipleMetricCriteria"
+                    "odata.type": "Microsoft.Azure.Monitor.SingleResourceMultipleCriteria"
                 },
                 "autoMitigate": true,
                 "targetResourceType": "Microsoft.OperationalInsights/workspaces",
@@ -121,7 +121,7 @@
                         "webHookProperties": {}
                     }
                 ],
-                "description": "[parameters('metricAlerts_Metrics_description')]"
+                "description": "[parameters('Alerts_description')]"
             }
         },
         {
@@ -152,8 +152,8 @@
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
-                    "scheduledqueryrules_Metrics_name":{
-                        "value":"[parameters('scheduledqueryrules_Metrics_name')]"
+                    "scheduledqueryrules_s_name":{
+                        "value":"[parameters('scheduledqueryrules_name')]"
                     },
                     "scheduledqueryrules_Error_Events_name":{
                         "value":"[parameters('scheduledqueryrules_Error_Events_name')]"
