@@ -93,7 +93,7 @@
             }
         },
         {
-            "type": "microsoft.insights/Alerts",
+            "type": "Microsoft.Insights/metricAlerts",
             "apiVersion": "2018-03-01",
             "name": "[parameters('alertName')]",
             "location": "global",
@@ -105,7 +105,7 @@
                 ],
                 "evaluationFrequency": "PT1M",
                 "windowSize": "PT5M",
-                "criteria": {
+                "criteria": {                    
                     "allOf": [
                         {
                             "threshold": 100000000,
@@ -135,7 +135,7 @@
                             "criterionType": "StaticThresholdCriterion"
                         }
                     ],
-                    "odata.type": "Microsoft.Azure.Monitor.SingleResourceMultipleCriteria"
+                    "odata.type": "Microsoft.Azure.Monitor.SingleResourceMultipleMetricCriteria"
                 },
                 "autoMitigate": true,
                 "targetResourceType": "Microsoft.OperationalInsights/workspaces",
