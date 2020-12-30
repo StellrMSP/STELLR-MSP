@@ -58,7 +58,7 @@
             "defaultValue": "",
             "type": "string",
             "metadata": {
-                "description": "Name of teh Log Analytics Workspace"
+                "description": "Name of the Log Analytics Workspace"
             }
         }
     },
@@ -99,10 +99,7 @@
             "location": "global",
             "properties": {
                 "severity": 3,
-                "enabled": true,
-                "scopes": [
-                    "[concat(parameters('workspaces_externalid'), parameters('workspaceName'))]"
-                ],
+                "enabled": true,               
                 "evaluationFrequency": "PT1M",
                 "windowSize": "PT5M",
                 "criteria": {                    
