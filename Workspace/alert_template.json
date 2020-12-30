@@ -17,7 +17,7 @@
                 "description": "Name of query rule"
             }
         },
-         "scheduledqueryrules_Evnet_log_warning_name": {
+         "scheduledqueryrules_WArning_Events_name": {
             "defaultValue": "",
             "type": "String",
             "metadata": {
@@ -183,7 +183,7 @@
                         "value":"[parameters('scheduledqueryrules_Error_Events_name')]"
                     },
                     "scheduledqueryrules_Evnet_log_warning_name":{
-                        "value":"[parameters('scheduledqueryrules_Evnet_log_warning_name')]"
+                        "value":"[parameters('scheduledqueryrules_Warning_Events_name')]"
                }
            }
        }
