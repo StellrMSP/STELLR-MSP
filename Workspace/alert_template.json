@@ -17,7 +17,7 @@
                 "description": "Name of query rule"
             }
         },
-         "scheduledqueryrules_WArning_Events_name": {
+         "scheduledqueryrules_Warning_Events_name": {
             "defaultValue": "",
             "type": "String",
             "metadata": {
@@ -161,6 +161,29 @@
                 "parameters": {
                     "workspaceName":{
                         "value": "[parameters('workspaceName')]"
+                    }
+                }
+            }
+        },
+        {
+            "name": "linkedDeployment1",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2019-10-01",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "https://raw.githubusercontent.com/StellrMSP/STELLR-MSP/main/Workspace/rule_template.json",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "scheduledqueryrules_name":{
+                        "value": "[parameters('scheduledqueryrules_name')]"
+                    },
+                    "scheduledqueryrules_Error_Events_name":{
+                        "value": "[parameters('scheduledqueryrules_Error_Events_name')]"
+                    },
+                    "scheduledqueryrules_Evnet_log_warning_name":{
+                        "value": "[parameters('scheduledqueryrules_Warning_Events_name')]"
                     }
                 }
             }
