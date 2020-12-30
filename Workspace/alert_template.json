@@ -44,7 +44,7 @@
             "type": "String"
         },
         "actiongroups_externalid": {
-            "defaultValue": "/subscriptions/subscription()/resourceGroups/resourceGroup().name/providers/microsoft.insights/actiongroups/",
+            "defaultValue": "/subscriptions/subscription().id/resourceGroups/resourceGroup().name/providers/microsoft.insights/actiongroups/",
             "type": "String"
         },        
         "actionGroups_name": {
