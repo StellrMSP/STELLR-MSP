@@ -132,7 +132,7 @@
                             "criterionType": "StaticThresholdCriterion"
                         }
                     ],
-                    "odata.type": "Microsoft.Azure.Monitor.SingleResourceMultipleMetricCriteria"
+                "odata.type": "Microsoft.Azure.Monitor.SingleResourceMultipleMetricCriteria"
                 },
                 "autoMitigate": true,
                 "targetResourceType": "Microsoft.OperationalInsights/workspaces",
