@@ -100,9 +100,9 @@
             "properties": {
                 "severity": 3,
                 "enabled": true,
-                "scopes": [
-                    "[concat('/subscriptions/subscription().subscriptionId/resourceGroups/resourceGroup().name/providers/Microsoft.OperationalInsights/workspaces',parameters('workspaceName'))]"
-                ],               
+                 "scopes": [
+          "[subscription().id]"
+                 ],  
                 "evaluationFrequency": "PT1M",
                 "windowSize": "PT5M",
                 "criteria": {                    
@@ -141,7 +141,7 @@
                 "targetResourceType": "Microsoft.OperationalInsights/workspaces",
                 "actions": [
                     {
-                        "actionGroupId": "[concat('/subscriptions/subscription().subscriptionId/resourceGroups/resourceGroup().name/providers/microsoft.insights/actiongroups/', parameters('actionGroups_name'))]",
+                        "actionGroupId": "[resourceId('Microsoft.Insights/actionGroups',parameters('actionGroups_name'))]",
                         "webHookProperties": {}
                     }
                 ],
