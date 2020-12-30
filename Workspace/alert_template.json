@@ -101,8 +101,8 @@
                 "severity": 3,
                 "enabled": true,
                  "scopes": [
-          "[subscription().id]"
-                 ],  
+                     "[resourceId('Microsoft.OperationalInsights/workspaces',parameters('workspaceName'))]"
+                 ], 
                 "evaluationFrequency": "PT1M",
                 "windowSize": "PT5M",
                 "criteria": {                    
