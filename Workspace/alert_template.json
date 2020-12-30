@@ -40,22 +40,22 @@
         }
     },
      "workspaces_externalid": {
-            "defaultValue": "subscription().id/resourceGroups/resourceGroup().name/providers/microsoft.insights/workspaces/",
+            "defaultValue": "/subscriptions/subscription().subscriptionId/resourceGroups/Stellr_WVD_Infrastructure/providers/Microsoft.OperationalInsights/workspaces/mlwvdmsp",
             "type": "String"
         },
         "actiongroups_externalid": {
-            "defaultValue": "subscription().id/resourceGroups/resourceGroup().name/providers/microsoft.insights/actiongroups/",
+            "defaultValue": "/subscriptions/subscription().subscriptionId/resourceGroups/stellr_wvd_infrastructure/providers/microsoft.insights/actiongroups/wvd-alerts",
             "type": "String"
-        },  
+        },
         "actionGroups_name": {
-            "defaultValue": "Email",
+            "defaultValue": "",
             "type": "String",
             "metadata": {
                 "description": "Name of the Action Group used to notify of alerts"
             }
         },
         "workspaceName": {
-            "defaultValue": "wvd-LA",
+            "defaultValue": "",
             "type": "string",
             "metadata": {
                 "description": "Name of teh Log Analytics Workspace"
