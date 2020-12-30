@@ -40,13 +40,13 @@
         }
     },
      "workspaces_externalid": {
-            "defaultValue": "/subscription().id/resourceGroups/resourceGroup().name/providers/microsoft.insights/workspaces/",
+            "defaultValue": "subscription().id/resourceGroups/resourceGroup().name/providers/microsoft.insights/workspaces/",
             "type": "String"
         },
         "actiongroups_externalid": {
-            "defaultValue": "/subscription().id/resourceGroups/resourceGroup().name/providers/microsoft.insights/actiongroups/",
+            "defaultValue": "subscription().id/resourceGroups/resourceGroup().name/providers/microsoft.insights/actiongroups/",
             "type": "String"
-        },        
+        },  
         "actionGroups_name": {
             "defaultValue": "Email",
             "type": "String",
