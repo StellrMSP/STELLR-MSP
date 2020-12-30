@@ -1,27 +1,45 @@
 {
     "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
+
     "parameters": {
         "scheduledqueryrules_name": {
-            "defaultValue": "s",
-            "type": "String"
+            "defaultValue": "",
+            "type": "String",
+            "metadata": {
+                "description": "Name of query rule"
+            }
         },
         "scheduledqueryrules_Error_Events_name": {
-            "defaultValue": "Error",
-            "type": "String"
+            "defaultValue": "",
+            "type": "String",
+            "metadata": {
+                "description": "Name of query rule"
+            }
         },
          "scheduledqueryrules_Evnet_log_warning_name": {
-            "defaultValue": "Warning",
-            "type": "String"
-        },
-        "Alerts_description": {
-            "type": "String"
-        },
-        "Alerts_name": {
-            "defaultValue": "Performance",
-            "type": "String"
-        },
-        "workspaces_externalid": {
+            "defaultValue": "",
+            "type": "String",
+            "metadata": {
+                "description": "Name of query rule"
+            } 
+            
+    },
+    "alertName": {
+        "defaultValue": "",
+        "type": "string",
+        "metadata": {
+            "description": "Name of counter ALert"
+        }
+    },
+    "alertDescription": {
+        "defaultValue": "",
+        "type": "string",
+        "metadata": {
+            "description": "Information about the counters"
+        }
+    },
+     "workspaces_externalid": {
             "defaultValue": "/subscriptions/subscription()/resourceGroups/resourceGroup().name/providers/Microsoft.OperationalInsights/workspaces/",
             "type": "String"
         },
@@ -31,11 +49,17 @@
         },        
         "actionGroups_name": {
             "defaultValue": "Email",
-            "type": "String"
+            "type": "String",
+            "metadata": {
+                "description": "Name of the Action Group used to notify of alerts"
+            }
         },
         "workspaceName": {
             "defaultValue": "wvd-LA",
-            "type": "string"
+            "type": "string",
+            "metadata": {
+                "description": "Name of teh Log Analytics Workspace"
+            }
         }
     },
     "variables": {},
@@ -71,7 +95,7 @@
         {
             "type": "microsoft.insights/Alerts",
             "apiVersion": "2018-03-01",
-            "name": "[parameters('Alerts_name')]",
+            "name": "[parameters('alertName')]",
             "location": "global",
             "properties": {
                 "severity": 3,
@@ -121,7 +145,7 @@
                         "webHookProperties": {}
                     }
                 ],
-                "description": "[parameters('Alerts_description')]"
+                "description": "[parameters('alertDescription')]"
             }
         },
         {
