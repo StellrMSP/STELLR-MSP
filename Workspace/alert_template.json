@@ -166,7 +166,7 @@
             }
         },
         {
-            "name": "linkedDeployment1",
+            "name": "QueryRule",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2019-10-01",
             "properties": {
