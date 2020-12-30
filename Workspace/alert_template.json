@@ -40,7 +40,7 @@
         }
     },
      "workspaces_externalid": {
-            "defaultValue": "/subscriptions/subscription()/resourceGroups/resourceGroup().name/providers/Microsoft.OperationalInsights/workspaces/",
+            "defaultValue": "/subscriptions/subscription().id/resourceGroups/resourceGroup().name/providers/Microsoft.OperationalInsights/workspaces/",
             "type": "String"
         },
         "actiongroups_externalid": {
