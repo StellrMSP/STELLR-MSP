@@ -112,7 +112,7 @@
                 "source": {
                     "query": "Event | where EventLevelName == \"warning\" | sort by TimeGenerated desc\r\n// Oql: Type=Event EventLevelName=warning // Args: {OQ: True; WorkspaceId: 00000000-0000-0000-0000-000000000000} // Settings: {PTT: True; SortI: True; SortF: True} // Version: 0.1.122",
                     "authorizedResources": [],
-                    "dataSourceId": "[parameters('workspaces_externalid')]",
+                    "dataSourceId": "[concat(parameters('workspaces_externalid'),parameters('workspaceName'))]",
                     "queryType": "ResultCount"
                 },
                 "schedule": {
