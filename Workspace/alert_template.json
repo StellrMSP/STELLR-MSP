@@ -37,15 +37,7 @@
         "type": "string",
         "metadata": {
             "description": "Information about the counters"
-        }
-    },
-     "workspaces_externalid": {
-            "defaultValue": "/subscriptions/subscription().subscriptionId/resourceGroups/resourceGroup().name/providers/Microsoft.OperationalInsights/workspaces/",
-            "type": "String"
-        },
-        "actiongroups_externalid": {
-            "defaultValue": "/subscriptions/subscription().subscriptionId/resourceGroups/resourceGroup().name/providers/microsoft.insights/actiongroups/",
-            "type": "String"
+            }
         },
         "actionGroups_name": {
             "defaultValue": "",
@@ -97,6 +89,9 @@
             "apiVersion": "2018-03-01",
             "name": "[parameters('alertName')]",
             "location": "global",
+            "dependsOn": [
+                "[resourceId('Microsoft.Resources/deployments', 'workspace')]"
+            ],
             "properties": {
                 "severity": 3,
                 "enabled": true,
@@ -166,27 +161,107 @@
             }
         },
         {
-            "name": "QueryRule",
-            "type": "Microsoft.Resources/deployments",
-            "apiVersion": "2019-10-01",
+            "type": "microsoft.insights/scheduledqueryrules",
+            "apiVersion": "2018-04-16",
+            "name": "[parameters('scheduledqueryrules_name')]",
+            "location": "eastus",            
+            "tags": {
+                "hidden-link:/subscriptions/subscription()/resourceGroups/resourceGroup().name//providers/Microsoft.OperationalInsights/workspaces/[parameters('workspaceName')]": "Resource"
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Resources/deployments', 'Alert')]"
+            ],
             "properties": {
-                "mode": "Incremental",
-                "templateLink": {
-                    "uri": "https://raw.githubusercontent.com/StellrMSP/STELLR-MSP/main/Workspace/rule_template.json",
-                    "contentVersion": "1.0.0.0"
+                "enabled": "true",
+                "source": {
+                    "queryType": "ResultCount",
+                    "dataSourceId": "[resourceId('Microsoft.OperationalInsights/workspaces',parameters('workspaceName'))]"                    
                 },
-                "parameters": {
-                    "scheduledqueryrules_name":{
-                        "value": "[parameters('scheduledqueryrules_name')]"
-                    },
-                    "scheduledqueryrules_Error_Events_name":{
-                        "value": "[parameters('scheduledqueryrules_Error_Events_name')]"
-                    },
-                    "scheduledqueryrules_Evnet_log_warning_name":{
-                        "value": "[parameters('scheduledqueryrules_Warning_Events_name')]"
-                    }
+                "action": {
+                    "criteria": [
+                        {
+                            "metricName": "Average_% Free Space",
+                            "dimensions": []
+                        },
+                        {
+                            "metricName": "Average_Current Disk Queue Length",
+                            "dimensions": []
+                        },
+                        {
+                            "metricName": "Average_Available MBytes Memory",
+                            "dimensions": []
+                        }
+                    ],
+                    "odata.type": "Microsoft.WindowsAzure.Management.Monitoring.Alerts.Models.Microsoft.AppInsights.Nexus.DataContracts.Resources.ScheduledQueryRules.LogToMetricAction"
                 }
             }
-        }     
+        },
+        {
+            "type": "microsoft.insights/scheduledqueryrules",
+            "apiVersion": "2018-04-16",
+            "name": "[parameters('scheduledqueryrules_Error_Events_name')]",
+            "location": "eastus",
+            "properties": {
+                "enabled": "true",
+                "source": {
+                    "query": "union Event, Syslog // Event table stores Windows event records, Syslog stores Linux records\n| where TimeGenerated > ago(1h)\n| where EventLevelName == \"Error\" // EventLevelName is used in the Event (Windows) records\nor SeverityLevel== \"err\" // SeverityLevel is used in Syslog (Linux) records",
+                    "authorizedResources": [],
+                    "dataSourceId": "[resourceId('Microsoft.OperationalInsights/workspaces',parameters('workspaceName'))]",
+                    "queryType": "ResultCount"
+                },
+                "schedule": {
+                    "frequencyInMinutes": 5,
+                    "timeWindowInMinutes": 5
+                },
+                "action": {
+                    "severity": "3",
+                    "aznsAction": {
+                        "actionGroup": [
+                            "[resourceId('Microsoft.Insights/actionGroups',parameters('actionGroups_name'))]"
+                        ]
+                    },
+                    "throttlingInMin": 20,
+                    "trigger": {
+                        "thresholdOperator": "GreaterThan",
+                        "threshold": 1
+                    },
+                    "odata.type": "Microsoft.WindowsAzure.Management.Monitoring.Alerts.Models.Microsoft.AppInsights.Nexus.DataContracts.Resources.ScheduledQueryRules.AlertingAction"
+                }
+            }
+        },
+        {
+            "type": "microsoft.insights/scheduledqueryrules",
+            "apiVersion": "2018-04-16",
+            "name": "[parameters('scheduledqueryrules_Warning_Events_name')]",
+            "location": "eastus",
+            "properties": {
+                "enabled": "true",
+                "source": {
+                    "query": "Event | where EventLevelName == \"warning\" | sort by TimeGenerated desc\r\n// Oql: Type=Event EventLevelName=warning // Args: {OQ: True; WorkspaceId: 00000000-0000-0000-0000-000000000000} // Settings: {PTT: True; SortI: True; SortF: True} // Version: 0.1.122",
+                    "authorizedResources": [],
+                    "dataSourceId": "[resourceId('Microsoft.OperationalInsights/workspaces',parameters('workspaceName'))]",
+                    "queryType": "ResultCount"
+                },
+                "schedule": {
+                    "frequencyInMinutes": 5,
+                    "timeWindowInMinutes": 5
+                },
+                "action": {
+                    "severity": "3",
+                    "aznsAction": {
+                        "actionGroup": [
+                            "[resourceId('Microsoft.Insights/actionGroups',parameters('actionGroups_name'))]"
+                        ]
+                    },
+                    "throttlingInMin": 20,
+                    "trigger": {
+                        "thresholdOperator": "GreaterThan",
+                        "threshold": 1
+                    },
+                    "odata.type": "Microsoft.WindowsAzure.Management.Monitoring.Alerts.Models.Microsoft.AppInsights.Nexus.DataContracts.Resources.ScheduledQueryRules.AlertingAction"
+                }
+            }
+               
+        }
     ]
 }
