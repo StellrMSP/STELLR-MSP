@@ -169,7 +169,7 @@
                 "hidden-link:/subscriptions/subscription()/resourceGroups/resourceGroup().name//providers/Microsoft.OperationalInsights/workspaces/[parameters('workspaceName')]": "Resource"
             },
             "dependsOn": [
-                "[resourceId('Microsoft.Resources/deployments', 'Alert')]"
+                "[resourceId('Microsoft.Insights/metricAlerts',parameters('alertName'))]"
             ],
             "properties": {
                 "enabled": "true",
