@@ -152,7 +152,7 @@
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
-                    "scheduledqueryrules_s_name":{
+                    "scheduledqueryrules_name":{
                         "value":"[parameters('scheduledqueryrules_name')]"
                     },
                     "scheduledqueryrules_Error_Events_name":{
