@@ -3,22 +3,26 @@
     "contentVersion": "1.0.0.0",
 
     "parameters": {
+        "scheduledqueryrules_Faults_name": {
+            "defaultValue": "PageFaults",
+            "type": "String"
+        },
         "scheduledqueryrules_name": {
-            "defaultValue": "",
+            "defaultValue": "PerformanceAlert",
             "type": "String",
             "metadata": {
                 "description": "Name of query rule"
             }
         },
         "scheduledqueryrules_Error_Events_name": {
-            "defaultValue": "",
+            "defaultValue": "ErrorAlert",
             "type": "String",
             "metadata": {
                 "description": "Name of query rule"
             }
         },
          "scheduledqueryrules_Warning_Events_name": {
-            "defaultValue": "",
+            "defaultValue": "WarningAlert",
             "type": "String",
             "metadata": {
                 "description": "Name of query rule"
@@ -26,28 +30,28 @@
             
     },
     "alertName": {
-        "defaultValue": "",
+        "defaultValue": "Performance",
         "type": "string",
         "metadata": {
             "description": "Name of counter ALert"
         }
     },
     "alertDescription": {
-        "defaultValue": "",
+        "defaultValue": "Performance Threshold Alert",
         "type": "string",
         "metadata": {
             "description": "Information about the counters"
             }
         },
         "actionGroups_name": {
-            "defaultValue": "",
+            "defaultValue": "CreateTicket",
             "type": "String",
             "metadata": {
                 "description": "Name of the Action Group used to notify of alerts"
             }
         },
         "workspaceName": {
-            "defaultValue": "",
+            "defaultValue": "WVD-MSP-Workspace",
             "type": "string",
             "metadata": {
                 "description": "Name of the Log Analytics Workspace"
@@ -221,7 +225,8 @@
                     "aznsAction": {
                         "actionGroup": [
                             "[resourceId('Microsoft.Insights/actionGroups',parameters('actionGroups_name'))]"
-                        ]
+                        ],
+                        "emailSubject": "[concat('Event Log Errors',parameters('scheduledqueryrules_Error_Events_name'))]"
                     },
                     "throttlingInMin": 20,
                     "trigger": {
@@ -256,8 +261,9 @@
                     "severity": "3",
                     "aznsAction": {
                         "actionGroup": [
-                            "[resourceId('Microsoft.Insights/actionGroups',parameters('actionGroups_name'))]"
-                        ]
+                            "[resourceId('Microsoft.Insights/actionGroups',parameters('actionGroups_name'))]"                            
+                        ],
+                        "emailSubject": "[concat('Event Log Warnings',parameters('scheduledqueryrules_Warning_Events_name'))]"
                     },
                     "throttlingInMin": 20,
                     "trigger": {
@@ -268,6 +274,42 @@
                 }
             }
                
+        },
+        {
+            "type": "microsoft.insights/scheduledqueryrules",
+            "apiVersion": "2018-04-16",
+            "name": "[parameters('scheduledqueryrules_Faults_name')]",
+            "location": "eastus",
+            "dependsOn": [
+                "[resourceId('Microsoft.Resources/deployments', 'workspace')]"
+            ],
+            "properties": {
+                "enabled": "true",
+                "source": {
+                    "query": "Perf\n| where ObjectName == \"memory\" and CounterName contains \"Page Faluts\" or CounterName contains \"Pages\" | where CounterValue >= abs(1500)\n\n",
+                    "authorizedResources": [],
+                    "dataSourceId": "[resourceId('Microsoft.OperationalInsights/workspaces',parameters('workspaceName'))]",
+                    "queryType": "ResultCount"
+                },
+                "schedule": {
+                    "frequencyInMinutes": 5,
+                    "timeWindowInMinutes": 1440
+                },
+                "action": {
+                    "severity": "3",
+                    "aznsAction": {
+                        "actionGroup": [
+                            "[resourceId('Microsoft.Insights/actionGroups',parameters('actionGroups_name'))]"
+                        ],
+                        "emailSubject": "[concat('Increased Page Faults', parameters('scheduledqueryrules_Faults_name'))]"
+                    },
+                    "trigger": {
+                        "thresholdOperator": "GreaterThan",
+                        "threshold": 2
+                    },
+                    "odata.type": "Microsoft.WindowsAzure.Management.Monitoring.Alerts.Models.Microsoft.AppInsights.Nexus.DataContracts.Resources.ScheduledQueryRules.AlertingAction"
+                }
+            }
         }
     ]
 }
