@@ -5,14 +5,14 @@
 
 <!-- Resource Group management
 =======
-[//]: # (Resource Group management
->>>>>>> 0c704bdbddbed9976e271965e7fe764091a1d428
+
+
 
 <a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FStellrMSP%2FSTELLR-MSP%2Fmain%2FLighthouse%2FDeployment%2Fazuredeploy.json" target= "_blank"> 
   <img src="https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/1-CONTRIBUTION-GUIDE/images/deploytoazure.png"/>
 </a>
  Enter any resource groups related to your Virtual Desktop environment in format:
-[{"rgName":"<Your RG Name>"},{"rgName":<Your RG Name>"}] )
+[{"rgName":"<Your RG Name>"},{"rgName":<Your RG Name>"}] ) -->
 
 Subscription wide Management
 
