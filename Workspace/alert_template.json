@@ -3,9 +3,12 @@
     "contentVersion": "1.0.0.0",
 
     "parameters": {
-        "scheduledqueryrules_Faults_name": {
-            "defaultValue": "PageFaults",
-            "type": "String"
+        "scheduledqueryrules_Faults_name": {          
+            "type": "String",
+            "allowedValues": [
+                "WVDhost",
+                "GetHost"
+            ]
         },
         "scheduledqueryrules_name": {
             "defaultValue": "PerformanceAlert",
