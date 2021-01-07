@@ -3,12 +3,16 @@
     "contentVersion": "1.0.0.0",
 
     "parameters": {
-        "scheduledqueryrules_Faults_name": {          
-            "type": "String",
+        "hostResourceGroup": {
+            "type": "string",
             "allowedValues": [
-                "WVDhost",
-                "GetHost"
+                "[resourceGroup().name]",
+                "[concat(subscription().id,resourceGroup().name)]"
             ]
+        },
+        "scheduledqueryrules_Faults_name": {
+            "defaultValue": "PageFaults",
+            "type": "String"
         },
         "scheduledqueryrules_name": {
             "defaultValue": "PerformanceAlert",
@@ -103,7 +107,7 @@
                 "severity": 3,
                 "enabled": true,
                  "scopes": [
-                     "[resourceId('Microsoft.OperationalInsights/workspaces',parameters('workspaceName'))]"
+                     "[resourceId('Microsoft.Resources/resourceGroups',parameters('hostResourceGroup'))]"
                  ], 
                 "evaluationFrequency": "PT1M",
                 "windowSize": "PT5M",
@@ -140,7 +144,7 @@
                 "odata.type": "Microsoft.Azure.Monitor.SingleResourceMultipleMetricCriteria"
                 },
                 "autoMitigate": true,
-                "targetResourceType": "Microsoft.OperationalInsights/workspaces",
+                "targetResourceType": "Microsoft.Resources/resourceGroups",
                 "actions": [
                     {
                         "actionGroupId": "[resourceId('Microsoft.Insights/actionGroups',parameters('actionGroups_name'))]",
@@ -182,7 +186,7 @@
                 "enabled": "true",
                 "source": {
                     "queryType": "ResultCount",
-                    "dataSourceId": "[resourceId('Microsoft.OperationalInsights/workspaces',parameters('workspaceName'))]"                    
+                    "dataSourceId": "[concat(subscription().id,'/resourceGroups/',parameters('hostResourceGroup'))]"                    
                 },
                 "action": {
                     "criteria": [
@@ -216,7 +220,7 @@
                 "source": {
                     "query": "union Event, Syslog // Event table stores Windows event records, Syslog stores Linux records\n| where TimeGenerated > ago(1h)\n| where EventLevelName == \"Error\" // EventLevelName is used in the Event (Windows) records\nor SeverityLevel== \"err\" // SeverityLevel is used in Syslog (Linux) records",
                     "authorizedResources": [],
-                    "dataSourceId": "[resourceId('Microsoft.OperationalInsights/workspaces',parameters('workspaceName'))]",
+                    "dataSourceId": "[concat(subscription().id,'/resourceGroups/',parameters('hostResourceGroup'))]",
                     "queryType": "ResultCount"
                 },
                 "schedule": {
@@ -253,7 +257,7 @@
                 "source": {
                     "query": "Event | where EventLevelName == \"warning\" | sort by TimeGenerated desc\r\n// Oql: Type=Event EventLevelName=warning // Args: {OQ: True; WorkspaceId: 00000000-0000-0000-0000-000000000000} // Settings: {PTT: True; SortI: True; SortF: True} // Version: 0.1.122",
                     "authorizedResources": [],
-                    "dataSourceId": "[resourceId('Microsoft.OperationalInsights/workspaces',parameters('workspaceName'))]",
+                    "dataSourceId": "[concat(subscription().id,'/resourceGroups/',parameters('hostResourceGroup'))]",
                     "queryType": "ResultCount"
                 },
                 "schedule": {
@@ -291,7 +295,7 @@
                 "source": {
                     "query": "Perf\n| where ObjectName == \"memory\" and CounterName contains \"Page Faluts\" or CounterName contains \"Pages\" | where CounterValue >= abs(1500)\n\n",
                     "authorizedResources": [],
-                    "dataSourceId": "[resourceId('Microsoft.OperationalInsights/workspaces',parameters('workspaceName'))]",
+                    "dataSourceId": "[concat(subscription().id,'/resourceGroups/',parameters('hostResourceGroup'))]",
                     "queryType": "ResultCount"
                 },
                 "schedule": {
