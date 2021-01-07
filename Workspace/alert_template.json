@@ -3,23 +3,27 @@
     "contentVersion": "1.0.0.0",
 
     "parameters": {
-        "hostResourceGroup": {
-            "type": "string",
-            "allowedValues": [
-                "[resourceGroup().name]",
-                "[concat(subscription().id,resourceGroup().name)]"
-            ]
-        },
-        "scheduledqueryrules_Faults_name": {
-            "defaultValue": "PageFaults",
+        "scheduledqueryrules_User_Input_name": {
+            "defaultValue": "User Input",
             "type": "String"
         },
-        "scheduledqueryrules_name": {
-            "defaultValue": "PerformanceAlert",
-            "type": "String",
+        "primaryResourceGroup": {
+            "type": "string",            
+            "defaultValue": "WVD_Primary",
             "metadata": {
-                "description": "Name of query rule"
+                "description": "Name of resource group with session hosts"
             }
+        },
+        "secondaryResourceGroup": {
+            "type": "string",            
+            "defaultValue": "WVD_secondary",
+            "metadata": {
+                "description": "Name of resource group with session hosts"
+            }
+        },
+        "scheduledqueryrules_name": {
+            "type": "string",
+            "defaultValue":"PerformanceAlert"
         },
         "scheduledqueryrules_Error_Events_name": {
             "defaultValue": "ErrorAlert",
@@ -28,15 +32,7 @@
                 "description": "Name of query rule"
             }
         },
-         "scheduledqueryrules_Warning_Events_name": {
-            "defaultValue": "WarningAlert",
-            "type": "String",
-            "metadata": {
-                "description": "Name of query rule"
-            } 
-            
-    },
-    "alertName": {
+        "alertName": {
         "defaultValue": "Performance",
         "type": "string",
         "metadata": {
@@ -44,7 +40,7 @@
         }
     },
     "alertDescription": {
-        "defaultValue": "Performance Threshold Alert",
+        "defaultValue": "Alerting on degredated perfomance of session host",
         "type": "string",
         "metadata": {
             "description": "Information about the counters"
@@ -80,8 +76,13 @@
                 "enabled": true,
                 "emailReceivers": [
                     {
-                        "name": "teamEmail_-EmailAction-",
-                        "emailAddress": "STELLR.MSPServices@synnex.com",
+                        "name": "Mike",
+                        "emailAddress": "michaelb@synnex.com",
+                        "useCommonAlertSchema": false
+                    },
+                    {
+                        "name":"Matt",
+                        "emailAddress":"matthewl@synnex.com",
                         "useCommonAlertSchema": false
                     }
                 ],
@@ -100,22 +101,20 @@
             "apiVersion": "2018-03-01",
             "name": "[parameters('alertName')]",
             "location": "global",
-            "dependsOn": [
-                "[resourceId('Microsoft.Resources/deployments', 'workspace')]"
-            ],
             "properties": {
-                "severity": 3,
+                "description": "[parameters('alertDescription')]",
+                "severity": 1,
                 "enabled": true,
-                 "scopes": [
-                     "[resourceId('Microsoft.Resources/resourceGroups',parameters('hostResourceGroup'))]"
-                 ], 
+                "scopes": [
+                    "[concat(subscription().id,'/resourceGroups/',resourceGroup().name,'/providers/Microsoft.OperationalInsights/workspaces/',parameters('workspaceName'))]"
+                ],
                 "evaluationFrequency": "PT1M",
                 "windowSize": "PT5M",
-                "criteria": {                    
+                "criteria": {
                     "allOf": [
                         {
-                            "threshold": 100000000,
-                            "name": "1",
+                            "threshold": 20,
+                            "name": "Metric1",
                             "metricNamespace": "Microsoft.OperationalInsights/workspaces",
                             "metricName": "Average_% Free Space",
                             "operator": "LessThanOrEqual",
@@ -123,35 +122,38 @@
                             "criterionType": "StaticThresholdCriterion"
                         },
                         {
-                            "threshold": 2,
-                            "name": "2",
+                            "threshold": 5,
+                            "name": "Metric2",
                             "metricNamespace": "Microsoft.OperationalInsights/workspaces",
                             "metricName": "Average_Current Disk Queue Length",
-                            "operator": "GreaterThan",
+                            "operator": "GreaterThanOrEqual",
                             "timeAggregation": "Average",
                             "criterionType": "StaticThresholdCriterion"
                         },
                         {
-                            "threshold": 512000000,
-                            "name": "3",
+                            "threshold": 200000000,
+                            "name": "Metric3",
                             "metricNamespace": "Microsoft.OperationalInsights/workspaces",
                             "metricName": "Average_Available MBytes Memory",
                             "operator": "LessThanOrEqual",
-                            "timeAggregation": "Maximum",
+                            "timeAggregation": "Average",
+                            "criterionType": "StaticThresholdCriterion"
+                        },
+                        {
+                            "threshold": 300,
+                            "name": "Metric4",
+                            "metricNamespace": "Microsoft.OperationalInsights/workspaces",
+                            "metricName": "Average_Pages/sec",
+                            "operator": "GreaterThanOrEqual",
+                            "timeAggregation": "Average",
                             "criterionType": "StaticThresholdCriterion"
                         }
                     ],
-                "odata.type": "Microsoft.Azure.Monitor.SingleResourceMultipleMetricCriteria"
+                    "odata.type": "Microsoft.Azure.Monitor.SingleResourceMultipleMetricCriteria"
                 },
                 "autoMitigate": true,
-                "targetResourceType": "Microsoft.Resources/resourceGroups",
-                "actions": [
-                    {
-                        "actionGroupId": "[resourceId('Microsoft.Insights/actionGroups',parameters('actionGroups_name'))]",
-                        "webHookProperties": {}
-                    }
-                ],
-                "description": "[parameters('alertDescription')]"
+                "targetResourceType": "Microsoft.OperationalInsights/workspaces",
+                "actions": []
             }
         },
         {
@@ -183,10 +185,11 @@
                 "[resourceId('Microsoft.Insights/metricAlerts',parameters('alertName'))]"
             ],
             "properties": {
+                "description":"Alerting on degredated perfomance of session host",
                 "enabled": "true",
                 "source": {
                     "queryType": "ResultCount",
-                    "dataSourceId": "[concat(subscription().id,'/resourceGroups/',parameters('hostResourceGroup'))]"                    
+                    "dataSourceId": "[concat(subscription().id,'/resourceGroups/',parameters('primaryResourceGroup'))]"                    
                 },
                 "action": {
                     "criteria": [
@@ -211,24 +214,61 @@
             "type": "microsoft.insights/scheduledqueryrules",
             "apiVersion": "2018-04-16",
             "name": "[parameters('scheduledqueryrules_Error_Events_name')]",
-            "location": "eastus",
-            "dependsOn": [
-                "[resourceId('Microsoft.Resources/deployments', 'workspace')]"
-            ],
+           "location": "eastus",
+            "tags": {
+                "wvd": "Infrastructure"
+            },
             "properties": {
+                "description": "Error level ",
                 "enabled": "true",
                 "source": {
-                    "query": "union Event, Syslog // Event table stores Windows event records, Syslog stores Linux records\n| where TimeGenerated > ago(1h)\n| where EventLevelName == \"Error\" // EventLevelName is used in the Event (Windows) records\nor SeverityLevel== \"err\" // SeverityLevel is used in Syslog (Linux) records",
-                    "authorizedResources": [],
-                    "dataSourceId": "[concat(subscription().id,'/resourceGroups/',parameters('hostResourceGroup'))]",
-                    "queryType": "ResultCount"
+                    "query": "// Reported errors \n// Show error events from the last hour. \n// To create an alert for this query, click '+ New alert rule'\nunion Event, Syslog // Event table stores Windows event records, Syslog stores Linux records\n| where TimeGenerated > ago(1h)\n| where EventLevelName == \"Error\" // EventLevelName is used in the Event (Windows) records\nor SeverityLevel== \"err\" // SeverityLevel is used in Syslog (Linux) records\n\r\n| where TimeGenerated >= ago(5m)\r\n| summarize AggregatedValue = count() by bin(TimeGenerated, 5m), _ResourceId",
+                    "dataSourceId": "[concat(subscription().id,'/resourceGroups/',parameters('primaryResourceGroup'))]",
+                    "queryType": "Number"
                 },
                 "schedule": {
                     "frequencyInMinutes": 5,
-                    "timeWindowInMinutes": 5
+                    "timeWindowInMinutes": 2880
                 },
                 "action": {
-                    "severity": "3",
+                    "severity": "1",
+                    "aznsAction": {
+                        "actionGroup": [
+                            "[resourceId('Microsoft.Insights/actionGroups',parameters('actionGroups_name'))]"
+                        ],
+                        "emailSubject": "[concat('Event Log Errors',parameters('scheduledqueryrules_Error_Events_name'))]"
+                    },
+                    "throttlingInMin": 20,
+                    "trigger": {
+                        "thresholdOperator": "GreaterThan",
+                        "threshold": 1
+                    },
+                    "odata.type": "Microsoft.WindowsAzure.Management.Monitoring.Alerts.Models.Microsoft.AppInsights.Nexus.DataContracts.Resources.ScheduledQueryRules.AlertingAction"
+                }
+            }
+        },
+         {
+            "type": "microsoft.insights/scheduledqueryrules",
+            "apiVersion": "2018-04-16",
+            "name": "[parameters('scheduledqueryrules_Error_Events_name')]",
+           "location": "eastus",
+            "tags": {
+                "wvd": "Infrastructure"
+            },
+            "properties": {
+                "description": "Error level ",
+                "enabled": "true",
+                "source": {
+                    "query": "// Reported errors \n// Show error events from the last hour. \n// To create an alert for this query, click '+ New alert rule'\nunion Event, Syslog // Event table stores Windows event records, Syslog stores Linux records\n| where TimeGenerated > ago(1h)\n| where EventLevelName == \"Error\" // EventLevelName is used in the Event (Windows) records\nor SeverityLevel== \"err\" // SeverityLevel is used in Syslog (Linux) records\n\r\n| where TimeGenerated >= ago(5m)\r\n| summarize AggregatedValue = count() by bin(TimeGenerated, 5m), _ResourceId",
+                    "dataSourceId": "[concat(subscription().id,'/resourceGroups/',parameters('secondaryResourceGroup'))]",
+                    "queryType": "Number"
+                },
+                "schedule": {
+                    "frequencyInMinutes": 5,
+                    "timeWindowInMinutes": 2880
+                },
+                "action": {
+                    "severity": "1",
                     "aznsAction": {
                         "actionGroup": [
                             "[resourceId('Microsoft.Insights/actionGroups',parameters('actionGroups_name'))]"
@@ -245,78 +285,41 @@
             }
         },
         {
-            "type": "microsoft.insights/scheduledqueryrules",
+          "type": "microsoft.insights/scheduledqueryrules",
             "apiVersion": "2018-04-16",
-            "name": "[parameters('scheduledqueryrules_Warning_Events_name')]",
-            "location": "eastus",
-            "dependsOn": [
-                "[resourceId('Microsoft.Resources/deployments', 'workspace')]"
-            ],
+            "name": "[parameters('scheduledqueryrules_User_Input_name')]",
+           "location": "eastus",
+            "tags": {
+                "wvd": "Infrastructure"
+            },
             "properties": {
+                "description": "User input delay",
                 "enabled": "true",
                 "source": {
-                    "query": "Event | where EventLevelName == \"warning\" | sort by TimeGenerated desc\r\n// Oql: Type=Event EventLevelName=warning // Args: {OQ: True; WorkspaceId: 00000000-0000-0000-0000-000000000000} // Settings: {PTT: True; SortI: True; SortF: True} // Version: 0.1.122",
+                    "query": "[concat('// Session Host user input delay\n//Chart user input delay per process and session\nlet _minValue = 500;\nPerf\n| where (ObjectName == \"', parameters('scheduledqueryrules_User_Input_name'), ' Delay per Session\" or //Session\nObjectName == \"', parameters('scheduledqueryrules_User_Input_name'), ' Delay per Process\") and //Process\n    CounterName == \"Max Input Delay\" //Max delay\n| where TimeGenerated >= ago(1h)\n| where CounterValue <= _minValue\n| summarize avg(CounterValue) by bin(TimeGenerated, 5m), Computer, InstanceName\n\n')]",
                     "authorizedResources": [],
-                    "dataSourceId": "[concat(subscription().id,'/resourceGroups/',parameters('hostResourceGroup'))]",
+                    "dataSourceId": "[concat(subscription().id,'/resourceGroups/',parameters('primaryResourceGroup'))]",
                     "queryType": "ResultCount"
                 },
                 "schedule": {
                     "frequencyInMinutes": 5,
-                    "timeWindowInMinutes": 5
+                    "timeWindowInMinutes": 60
                 },
                 "action": {
-                    "severity": "3",
+                    "severity": "1",
                     "aznsAction": {
-                        "actionGroup": [
-                            "[resourceId('Microsoft.Insights/actionGroups',parameters('actionGroups_name'))]"                            
-                        ],
-                        "emailSubject": "[concat('Event Log Warnings',parameters('scheduledqueryrules_Warning_Events_name'))]"
-                    },
-                    "throttlingInMin": 20,
-                    "trigger": {
-                        "thresholdOperator": "GreaterThan",
-                        "threshold": 1
-                    },
-                    "odata.type": "Microsoft.WindowsAzure.Management.Monitoring.Alerts.Models.Microsoft.AppInsights.Nexus.DataContracts.Resources.ScheduledQueryRules.AlertingAction"
-                }
-            }
-               
-        },
-        {
-            "type": "microsoft.insights/scheduledqueryrules",
-            "apiVersion": "2018-04-16",
-            "name": "[parameters('scheduledqueryrules_Faults_name')]",
-            "location": "eastus",
-            "dependsOn": [
-                "[resourceId('Microsoft.Resources/deployments', 'workspace')]"
-            ],
-            "properties": {
-                "enabled": "true",
-                "source": {
-                    "query": "Perf\n| where ObjectName == \"memory\" and CounterName contains \"Page Faluts\" or CounterName contains \"Pages\" | where CounterValue >= abs(1500)\n\n",
-                    "authorizedResources": [],
-                    "dataSourceId": "[concat(subscription().id,'/resourceGroups/',parameters('hostResourceGroup'))]",
-                    "queryType": "ResultCount"
-                },
-                "schedule": {
-                    "frequencyInMinutes": 5,
-                    "timeWindowInMinutes": 1440
-                },
-                "action": {
-                    "severity": "3",
-                    "aznsAction": {
-                        "actionGroup": [
+                        "actionGroup": [ 
                             "[resourceId('Microsoft.Insights/actionGroups',parameters('actionGroups_name'))]"
                         ],
-                        "emailSubject": "[concat('Increased Page Faults', parameters('scheduledqueryrules_Faults_name'))]"
-                    },
+                        "emailSubject": "[concat('Event Log Errors',parameters('scheduledqueryrules_Error_Events_name'))]"
+                    },                    
                     "trigger": {
-                        "thresholdOperator": "GreaterThan",
+                        "thresholdOperator": "GreaterThanOrEqual",
                         "threshold": 2
                     },
                     "odata.type": "Microsoft.WindowsAzure.Management.Monitoring.Alerts.Models.Microsoft.AppInsights.Nexus.DataContracts.Resources.ScheduledQueryRules.AlertingAction"
                 }
-            }
-        }
+            } 
+        }   
     ]
 }
