@@ -32,6 +32,13 @@
                 "description": "Name of query rule"
             }
         },
+        "scheduledqueryrules_Error_Events2_name": {
+            "defaultValue": "ErrorAlert2",
+            "type": "String",
+            "metadata": {
+                "description": "Name of query rule"
+            }
+        },
         "alertName": {
         "defaultValue": "Performance",
         "type": "string",
@@ -182,14 +189,14 @@
                 "hidden-link:/subscriptions/subscription()/resourceGroups/resourceGroup().name//providers/Microsoft.OperationalInsights/workspaces/[parameters('workspaceName')]": "Resource"
             },
             "dependsOn": [
-                "[resourceId('Microsoft.Insights/metricAlerts',parameters('alertName'))]"
+                "[resourceId('Microsoft.Resources/deployments','workspace')]"
             ],
             "properties": {
                 "description":"Alerting on degredated perfomance of session host",
                 "enabled": "true",
                 "source": {
                     "queryType": "ResultCount",
-                    "dataSourceId": "[concat(subscription().id,'/resourceGroups/',parameters('primaryResourceGroup'))]"                    
+                    "dataSourceId": "[concat(subscription().id,'/resourceGroups/',resourceGroup().name,'/providers/Microsoft.OperationalInsights/',parameters('workspaceName'))]"                   
                 },
                 "action": {
                     "criteria": [
@@ -218,6 +225,9 @@
             "tags": {
                 "wvd": "Infrastructure"
             },
+             "dependsOn": [
+                "[resourceId('Microsoft.Resources/deployments','workspace')]"
+            ],
             "properties": {
                 "description": "Error level ",
                 "enabled": "true",
@@ -250,11 +260,14 @@
          {
             "type": "microsoft.insights/scheduledqueryrules",
             "apiVersion": "2018-04-16",
-            "name": "[parameters('scheduledqueryrules_Error_Events_name')]",
+            "name": "[parameters('scheduledqueryrules_Error_Events2_name')]",
            "location": "eastus",
             "tags": {
                 "wvd": "Infrastructure"
             },
+             "dependsOn": [
+                "[resourceId('Microsoft.Resources/deployments','workspace')]"
+            ],
             "properties": {
                 "description": "Error level ",
                 "enabled": "true",
@@ -292,13 +305,16 @@
             "tags": {
                 "wvd": "Infrastructure"
             },
+            "dependsOn": [
+                "[resourceId('Microsoft.Resources/deployments','workspace')]"
+            ],
             "properties": {
                 "description": "User input delay",
                 "enabled": "true",
                 "source": {
                     "query": "[concat('// Session Host user input delay\n//Chart user input delay per process and session\nlet _minValue = 500;\nPerf\n| where (ObjectName == \"', parameters('scheduledqueryrules_User_Input_name'), ' Delay per Session\" or //Session\nObjectName == \"', parameters('scheduledqueryrules_User_Input_name'), ' Delay per Process\") and //Process\n    CounterName == \"Max Input Delay\" //Max delay\n| where TimeGenerated >= ago(1h)\n| where CounterValue <= _minValue\n| summarize avg(CounterValue) by bin(TimeGenerated, 5m), Computer, InstanceName\n\n')]",
                     "authorizedResources": [],
-                    "dataSourceId": "[concat(subscription().id,'/resourceGroups/',parameters('primaryResourceGroup'))]",
+                    "dataSourceId": "[concat(subscription().id,'/resourceGroups/',resourceGroup().name,'/providers/Microsoft.OperationalInsights/',parameters('workspaceName'))]",
                     "queryType": "ResultCount"
                 },
                 "schedule": {
