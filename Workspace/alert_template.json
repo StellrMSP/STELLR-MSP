@@ -108,6 +108,9 @@
             "apiVersion": "2018-03-01",
             "name": "[parameters('alertName')]",
             "location": "global",
+            "dependsOn": [
+                "[resourceId('Microsoft.Resources/deployments','workspace')]"
+            ],
             "properties": {
                 "description": "[parameters('alertDescription')]",
                 "severity": 1,
