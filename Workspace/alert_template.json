@@ -201,6 +201,10 @@
                     "queryType": "ResultCount",
                     "dataSourceId": "[concat(subscription().id,'/resourceGroups/',resourceGroup().name,'/providers/Microsoft.OperationalInsights/',parameters('workspaceName'))]"                   
                 },
+                 "schedule": {
+                    "frequencyInMinutes": 5,
+                    "timeWindowInMinutes": 60
+                },
                 "action": {
                     "criteria": [
                         {
@@ -237,7 +241,7 @@
                 "source": {
                     "query": "// Reported errors \n// Show error events from the last hour. \n// To create an alert for this query, click '+ New alert rule'\nunion Event, Syslog // Event table stores Windows event records, Syslog stores Linux records\n| where TimeGenerated > ago(1h)\n| where EventLevelName == \"Error\" // EventLevelName is used in the Event (Windows) records\nor SeverityLevel== \"err\" // SeverityLevel is used in Syslog (Linux) records\n\r\n| where TimeGenerated >= ago(5m)\r\n| summarize AggregatedValue = count() by bin(TimeGenerated, 5m), _ResourceId",
                     "dataSourceId": "[concat(subscription().id,'/resourceGroups/',parameters('primaryResourceGroup'))]",
-                    "queryType": "Number"
+                    "queryType": "ResultCount"
                 },
                 "schedule": {
                     "frequencyInMinutes": 5,
@@ -277,7 +281,7 @@
                 "source": {
                     "query": "// Reported errors \n// Show error events from the last hour. \n// To create an alert for this query, click '+ New alert rule'\nunion Event, Syslog // Event table stores Windows event records, Syslog stores Linux records\n| where TimeGenerated > ago(1h)\n| where EventLevelName == \"Error\" // EventLevelName is used in the Event (Windows) records\nor SeverityLevel== \"err\" // SeverityLevel is used in Syslog (Linux) records\n\r\n| where TimeGenerated >= ago(5m)\r\n| summarize AggregatedValue = count() by bin(TimeGenerated, 5m), _ResourceId",
                     "dataSourceId": "[concat(subscription().id,'/resourceGroups/',parameters('secondaryResourceGroup'))]",
-                    "queryType": "Number"
+                    "queryType": "ResultCount"
                 },
                 "schedule": {
                     "frequencyInMinutes": 5,
@@ -333,7 +337,7 @@
                         "emailSubject": "[concat('Event Log Errors',parameters('scheduledqueryrules_Error_Events_name'))]"
                     },                    
                     "trigger": {
-                        "thresholdOperator": "GreaterThanOrEqual",
+                        "thresholdOperator": "GreaterThan",
                         "threshold": 2
                     },
                     "odata.type": "Microsoft.WindowsAzure.Management.Monitoring.Alerts.Models.Microsoft.AppInsights.Nexus.DataContracts.Resources.ScheduledQueryRules.AlertingAction"
